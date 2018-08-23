@@ -1,0 +1,59 @@
+/*
+Given an array nums of n integers and an integer target, are there elements a, b, c, and d in nums such that a + b + c + d = target? Find all unique quadruplets in the array which gives the sum of target.
+
+Note:
+
+The solution set must not contain duplicate quadruplets.
+
+Example:
+
+Given array nums = [1, 0, -1, 0, -2, 2], and target = 0.
+
+A solution set is:
+[
+  [-1,  0, 0, 1],
+  [-2, -1, 1, 2],
+  [-2,  0, 0, 2]
+]
+*/
+
+vector<vector<int> > fourSum(vector<int> &num, int target) {
+        vector<vector<int> > rst;
+        if(num.size() < 4) return rst;
+        
+        sort(num.begin(), num.end());
+        for(int i = 0; i < num.size(); ++i){
+            if(i > 0 && num[i] == num[i-1]) continue;
+            
+            threesum(i, num, target-num[i], rst);
+        }
+        return rst;
+    }
+    
+    void threesum(int start, vector<int>& num, int target, vector<vector<int> > &rst){
+        vector<int> tmp;
+        for(int i = start+1; i < num.size(); ++i){
+            if(i > (start+1) && num[i] == num[i-1]) continue;
+            
+            int j = i+1;
+            int k = num.size()-1;
+            int t = target - num[i];
+            while(j < k){
+                if(num[j]+num[k] == t){
+                    tmp.clear();
+                    tmp.push_back(num[start]);
+                    tmp.push_back(num[i]);
+                    tmp.push_back(num[j]);
+                    tmp.push_back(num[k]);
+                    rst.push_back(tmp);
+                    j++; k--;
+                    
+                    while(j<k && num[j]==num[j-1]) j++;
+                    while(j<k && num[k]==num[k+1]) k--;
+                }
+                else if(num[j]+num[k] < t) j++;
+                else k--;
+            }
+        }
+    }
+
