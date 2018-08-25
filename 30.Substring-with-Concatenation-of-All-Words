@@ -1,0 +1,72 @@
+/*
+You are given a string, s, and a list of words, words, that are all of the same length. Find all starting indices of substring(s) in s that is a concatenation of each word in words exactly once and without any intervening characters.
+
+Example 1:
+
+Input:
+  s = "barfoothefoobarman",
+  words = ["foo","bar"]
+Output: [0,9]
+Explanation: Substrings starting at index 0 and 9 are "barfoor" and "foobar" respectively.
+The output order does not matter, returning [9,0] is fine too.
+Example 2:
+
+Input:
+  s = "wordgoodstudentgoodword",
+  words = ["word","student"]
+Output: []
+*/
+
+vector<int> findSubstring(string S, vector<string> &L) {
+        vector<int> rst;
+        if(L.empty()) return rst;
+        
+        map<string, int> toFindMap;
+        map<string, int> hasFindMap;
+        for(int i = 0; i < L.size(); ++i){
+            if(toFindMap.find(L[i]) == toFindMap.end()) {
+                toFindMap.insert(make_pair(L[i], 1));
+            }
+            else
+                toFindMap[L[i]]++;
+        }
+        int sLen = S.length();
+        int len = L[0].length();
+        for(int i = 0; i < len; ++i){
+            hasFindMap.clear();
+            int begin = i, count = 0;
+            for(int end = i; end <= (int)sLen-len; end += len){
+                string tmp = S.substr(end, len);
+                if(toFindMap.find(tmp) != toFindMap.end()){
+                    if(hasFindMap.find(tmp) == hasFindMap.end()){
+                        hasFindMap.insert(make_pair(tmp, 1));
+                    }
+                    else
+                        hasFindMap[tmp]++;
+                    
+                    if(hasFindMap[tmp] <= toFindMap[tmp])
+                        count++;
+                    else {
+                        // current world has been found toFind times
+                        // move to next word after first position of current world
+                        for(int k = begin; ; k += len){
+                            string t = S.substr(k, len);
+                            hasFindMap[t]--;
+                            if(t == tmp){
+                                begin = k+len;
+                                break;
+                            }
+                            count--;
+                        }
+                    }
+                    
+                    if(count == L.size()) rst.push_back(begin);
+                }
+                else {
+                    begin = end + len;
+                    count = 0;
+                    hasFindMap.clear();
+                }
+            }
+        }
+    }
