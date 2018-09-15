@@ -1,0 +1,50 @@
+/*
+Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O(n).
+
+Example:
+
+Input: S = "ADOBECODEBANC", T = "ABC"
+Output: "BANC"
+Note:
+
+If there is no such window in S that covers all characters in T, return the empty string "".
+If there is such window, you are guaranteed that there will always be only one unique minimum window in S.
+*/
+
+
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        int sLen = s.size();
+        int tLen = t.size();
+        
+        int minLen = INT_MAX, minSt = 0, minEd = 0;
+        int hasFind[256] = {0};
+        int toFind[256] = {0};
+        for(int i = 0; i < tLen; i++){
+            toFind[t[i]]++;
+        }
+        
+        int count = 0;
+        for(int st = 0, ed = 0; ed < sLen; ed++){
+            if(toFind[s[ed]] == 0) continue;
+            
+            hasFind[s[ed]]++;
+            if(hasFind[s[ed]] <= toFind[s[ed]]) count++;
+            
+            if(count == tLen){
+                while(toFind[s[st]] == 0 || hasFind[s[st]] > toFind[s[st]]){
+                    if(hasFind[s[st]] > toFind[s[st]]) hasFind[s[st]]--;
+                    st++;
+                }
+                
+                int len = ed-st+1;
+                if(len < minLen){
+                    minLen = len, minSt = st, minEd = ed;
+                }
+            }
+        }
+       
+        return count == tLen ? s.substr(minSt, minLen) : ""; 
+    }
+};
