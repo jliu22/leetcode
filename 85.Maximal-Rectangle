@@ -1,0 +1,64 @@
+/*
+Given a 2D binary matrix filled with 0's and 1's, find the largest rectangle containing only 1's and return its area.
+
+Example:
+
+Input:
+[
+  ["1","0","1","0","0"],
+  ["1","0","1","1","1"],
+  ["1","1","1","1","1"],
+  ["1","0","0","1","0"]
+]
+Output: 6
+*/
+
+// use same idea as 84.Largest Rectangle in Histogram
+
+class Solution {
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        if(matrix.empty()) return 0;
+        
+        vector<vector<int>> heights;
+        getheights(matrix, heights);
+        
+        int maxarea = 0;
+        for(int i = 0; i < matrix.size(); ++i){
+            maxarea = max(maxarea, calculate(heights[i]));
+        }
+        return maxarea;
+    }
+
+    int calculate(vector<int>& height){
+        int linemax = 0, i = 0;
+        stack<int> s;
+        height.push_back(0);
+        while(i < height.size()){
+            if(s.empty() || height[i] >= height[s.top()]) s.push(i++);
+            else {
+                int idx = s.top();
+                s.pop();
+                linemax = max(linemax, height[idx]*(s.empty() ? i : i-s.top()-1));
+            }
+        }
+        return linemax;
+    }
+
+    void getheights(vector<vector<char>>& matrix, vector<vector<int>>& heights){
+        vector<int> cur;
+        vector<int> pre;
+        for(int i = 0; i < matrix.size(); ++i){
+            cur.clear();
+            for(int j = 0; j < matrix[i].size(); ++j){
+                if(matrix[i][j] == '0') cur.push_back(0);
+                else {
+                    int h = (i == 0 ? 1 : pre[j]+1);
+                    cur.push_back(h);
+                }
+            }
+            pre = cur;
+            heights.push_back(cur);
+        }
+    }
+};
