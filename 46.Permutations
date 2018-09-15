@@ -1,0 +1,46 @@
+/*
+Given a collection of distinct integers, return all possible permutations.
+
+Example:
+
+Input: [1,2,3]
+Output:
+[
+  [1,2,3],
+  [1,3,2],
+  [2,1,3],
+  [2,3,1],
+  [3,1,2],
+  [3,2,1]
+]
+*/
+
+class Solution {
+public:
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int>> rst;
+        if(nums.empty()) return rst;
+
+        vector<bool> visited(nums.size(), false);
+        vector<int> part;
+        dfs(part, visited, nums, rst);
+        return rst;
+    }
+    
+    void dfs(vector<int>& part, vector<bool>& visited, vector<int>& nums, vector<vector<int>>& rst){
+        if(part.size() == nums.size()){
+            rst.push_back(part);
+            return;
+        }
+        
+        for(int i = 0; i < nums.size(); i++){
+            if(!visited[i]){
+                visited[i] = true;
+                part.push_back(nums[i]);
+                dfs(part, visited, nums, rst);
+                part.pop_back();
+                visited[i] = false;
+            }
+        }
+    }
+};
