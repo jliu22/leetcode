@@ -16,6 +16,48 @@ Note:
 You can assume that you can always reach the last index.
 */
 
+/*
+I think this is a greedy question. Idea is move step by step forward, at each position, check how far it can reach and compare with previous maximum as curr(max),
+and check if past last(max), means already beyond last one jump can reach, so will need another jump, and assign last=curr.
+
+2 3 1 1 4
+^
+i = 0, A[i] = 2
+curr = 0, last = 0
+curr = max(0, 2) = 2
+
+2 3 1 1 4
+  ^
+  i = 1, A[i] = 3, i+A[i]=4
+  i > last
+  last = 2
+  curr = max(curr, i+A[i]) = 4
+  step = 1
+
+2 3 1 1 4
+    ^
+    i = 2, A[i] = 1, i+A[i] = 3
+    i = last
+    curr = max(curr, i+A[i]) = 4
+
+2 3 1 1 4
+      ^
+      i = 3, A[i] = 1, i+A[i] = 4
+      i > last
+      last = 4
+      step = 2
+      curr = max(curr, i+A[i]) = 4
+
+2 3 1 1 4
+        ^
+        i = 4, A[i] = 4, i+A[i] = 8
+        i = last --> still in last(max) can reach
+        curr = max(curr, i+A[i]) = 8
+loop end
+==>
+step = 2
+*/
+
 class Solution {
 public:
     int jump(int A[], int n) {
