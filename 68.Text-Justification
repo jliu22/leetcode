@@ -1,0 +1,156 @@
+/*
+Given an array of words and a width maxWidth, format the text such that each line has exactly maxWidth characters and is fully (left and right) justified.
+
+You should pack your words in a greedy approach; that is, pack as many words as you can in each line. Pad extra spaces ' ' when necessary so that each line has exactly maxWidth characters.
+
+Extra spaces between words should be distributed as evenly as possible. If the number of spaces on a line do not divide evenly between words, the empty slots on the left will be assigned more spaces than the slots on the right.
+
+For the last line of text, it should be left justified and no extra space is inserted between words.
+
+Note:
+
+A word is defined as a character sequence consisting of non-space characters only.
+Each word's length is guaranteed to be greater than 0 and not exceed maxWidth.
+The input array words contains at least one word.
+Example 1:
+
+Input:
+words = ["This", "is", "an", "example", "of", "text", "justification."]
+maxWidth = 16
+Output:
+[
+   "This    is    an",
+   "example  of text",
+   "justification.  "
+]
+Example 2:
+
+Input:
+words = ["What","must","be","acknowledgment","shall","be"]
+maxWidth = 16
+Output:
+[
+  "What   must   be",
+  "acknowledgment  ",
+  "shall be        "
+]
+Explanation: Note that the last line is "shall be    " instead of "shall     be",
+             because the last line must be left-justified instead of fully-justified.
+             Note that the second line is also left-justified becase it contains only one word.
+Example 3:
+
+Input:
+words = ["Science","is","what","we","understand","well","enough","to","explain",
+         "to","a","computer.","Art","is","everything","else","we","do"]
+maxWidth = 20
+Output:
+[
+  "Science  is  what we",
+  "understand      well",
+  "enough to explain to",
+  "a  computer.  Art is",
+  "everything  else  we",
+  "do                  "
+]
+*/
+
+// too long to remember what I have done
+
+class Solution {
+public:
+    vector<string> fullJustify(vector<string> &words, int L) {
+        vector<string> rst;
+        if(words.empty())return rst;
+        if(words.size()==1 && words[0] == ""){
+            string t;
+            if(L == 0) rst.push_back("");
+            else {
+                t.append(L, ' ');
+                rst.push_back(t);
+            }
+            return rst;
+        }
+        
+        int i = 0, n = words.size(), st = 0; 
+        int len = 0; bool blastout = false; bool blastgt = false;
+        
+        while(i < n){
+            len += words[i].length();
+            if(len + (i-st) == L){
+                string tmp;
+                for(int j = st; j <i; j++){
+                    tmp += (words[j]+' ');
+                }
+                tmp += words[i];
+                
+                rst.push_back(tmp);
+                st = i+1;
+                len = 0;
+                if(i == n-1)blastout = true;
+            }
+            else if(len + (i-st) > L){
+                string tmp = formstr(len, i, L, st, words);
+                rst.push_back(tmp);
+                st = i;
+                i--;
+                len = 0;
+                if(i == n-1)blastgt = true;
+            }
+
+            i++;
+        }
+
+        string tmp;
+        if(!blastout){
+            i--;
+            if(len + (i-st)<=L){
+                for(int j = st; j <i; j++){
+                    tmp += (words[j]+' ');
+                }
+                tmp.append(words[i]);
+                tmp.append(L-tmp.size(), ' ');
+                rst.push_back(tmp);
+            }
+        }
+
+        if(blastgt){
+            tmp = words[i];
+            tmp.append(L-words[i].size(), ' ');
+            rst.push_back(tmp);
+        }
+
+        return rst;
+    }
+    
+    string formstr(int len, int i, int L, int st, vector<string> &words){
+        string tmp;
+        len -= words[i].length();
+        int gaps = L-len;
+                
+        i--;
+        int num = i - st;//how many gap
+        if(num == 0){//one word
+            tmp.append(words[i]);
+            tmp.append(gaps, ' ');
+        }
+        else {
+            int t = gaps%num;
+            int d = gaps/num;
+            int j = st;
+            while(j < i){
+                tmp.append(words[j]);
+                    
+                if(t > 0){
+                    tmp.append(d+1, ' ');
+                }
+                else {
+                    tmp.append(d, ' ');
+                }
+                t--;j++;
+            }
+            tmp.append(words[i]);
+        }
+        return tmp;
+    }
+    
+};
