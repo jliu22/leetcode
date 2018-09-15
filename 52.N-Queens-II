@@ -1,0 +1,54 @@
+/*
+The n-queens puzzle is the problem of placing n queens on an n×n chessboard such that no two queens attack each other.
+
+Given an integer n, return the number of distinct solutions to the n-queens puzzle.
+
+Example:
+
+Input: 4
+Output: 2
+Explanation: There are two distinct solutions to the 4-queens puzzle as shown below.
+[
+ [".Q..",  // Solution 1
+  "...Q",
+  "Q...",
+  "..Q."],
+
+ ["..Q.",  // Solution 2
+  "Q...",
+  "...Q",
+  ".Q.."]
+]
+*/
+
+class Solution {
+public:
+    int total = 0;
+    int totalNQueens(int n) {
+        if(n<=0) return 0;
+        int a[n];
+        place(a, n, 0);
+        return total;
+    }
+    
+    void place(int a[], int n, int k){
+        if(k == n){
+            total++;
+            return;
+        }
+        
+        for(int j = 0; j < n; j++){
+            a[k] = j;
+            if(check(a, k)){
+                place(a, n, k+1);
+            }
+        }
+    }
+    
+    bool check(int a[], int k){
+        for(int i = 0; i < k; i++){
+            if(a[i] == a[k] || abs(a[i]-a[k]) == k-i) return false;
+        }
+        return true;
+    }
+};

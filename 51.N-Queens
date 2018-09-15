@@ -1,0 +1,68 @@
+/*
+Given an integer n, return all distinct solutions to the n-queens puzzle.
+
+Each solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space respectively.
+
+Example:
+
+Input: 4
+Output: [
+ [".Q..",  // Solution 1
+  "...Q",
+  "Q...",
+  "..Q."],
+
+ ["..Q.",  // Solution 2
+  "Q...",
+  "...Q",
+  ".Q.."]
+]
+Explanation: There exist two distinct solutions to the 4-queens puzzle as shown above.
+*/
+
+/*
+use one dimension array to represent where to place queen
+k is the k row of the puzzle, a[k] is the postion of queen, a[k] = {0,..n}
+for example, a[0] = 1, means place queen at 0 row 1 column
+*/
+
+class Solution {
+public:
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>> rst;
+        if(n <= 0) return rst;
+        vector<int> a(n, 0);
+        
+        place(a, n, 0, rst);
+    }
+    
+    void place(vector<int>& a, int n, int k, vector<vector<string>>& rst){
+        if(k == n){
+            vector<string> onerst;
+            for(int i = 0; i < n; i++){
+                string tmp(n, '.');
+                for(int j = 0; j < n; j++){
+                    if(a[i] == j) {
+                        tmp[j] = 'Q';
+                        break;
+                    }
+                }
+                onerst.push_back(tmp);
+            }
+            rst.push_back(onerst);
+            return;
+        }
+        
+        for(int j = 0; j < n; j++){
+            a[k] = j;
+            if(check(a, k)) place(a, n, k+1, rst);
+        }
+    }
+    
+    bool check(vector<int>& a, int k){
+        for(int i = 0; i < k; i++){
+            if(a[i] == a[k] || abs(a[i]-a[k]) == (k-i)) return false;
+        }
+        return true;
+    }
+};
