@@ -1,0 +1,106 @@
+/*
+Given two words (beginWord and endWord), and a dictionary's word list, find all shortest transformation sequence(s) from beginWord to endWord, such that:
+
+Only one letter can be changed at a time
+Each transformed word must exist in the word list. Note that beginWord is not a transformed word.
+Note:
+
+Return an empty list if there is no such transformation sequence.
+All words have the same length.
+All words contain only lowercase alphabetic characters.
+You may assume no duplicates in the word list.
+You may assume beginWord and endWord are non-empty and are not the same.
+Example 1:
+
+Input:
+beginWord = "hit",
+endWord = "cog",
+wordList = ["hot","dot","dog","lot","log","cog"]
+
+Output:
+[
+  ["hit","hot","dot","dog","cog"],
+  ["hit","hot","lot","log","cog"]
+]
+Example 2:
+
+Input:
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log"]
+
+Output: []
+
+Explanation: The endWord "cog" is not in wordList, therefore no possible transformation.
+*/
+
+
+class Solution {
+    bool bFind = false;
+public:
+
+    vector<vector<string>> findLadders(string start, string end, vector<string> &wordList) {
+        vector<vector<string> > rst;
+        if(start.empty() || end.empty() || wordList.empty() || start == end) return rst;
+
+        unordered_set<string> dict(wordList.begin(), wordList.end());
+        unordered_map<string, vector<string> > pathmap;
+        unordered_set<string> setPush, setPop;
+        unordered_set<string>::iterator it;  
+
+        setPop.insert(start);
+        vector<string> similar;
+
+        while(!setPop.empty() && !setPop.count(end)){
+            
+            for(it=setPop.begin();it!=setPop.end();it++)  
+                dict.erase(*it);
+
+            for(it=setPop.begin();it!=setPop.end();it++){ 
+                string str(*it);
+                if(str==end) break;
+                similar.clear();
+                for(int i = 0; i < str.size(); i++){
+                    for(int j = 'a'; j <= 'z'; j++){
+                        if(str[i] == j) continue;
+                        char tmp = str[i];
+                        str[i] = j;
+                        if(str==end) bFind = true;
+
+                        if(dict.count(str)>0){
+                            setPush.insert(str);
+                            similar.push_back(str);
+                        }
+                        str[i] = tmp;
+                    }
+                }
+                pathmap.insert(pair<string,vector<string>>(*it,similar));
+            }
+            
+            swap(setPop, setPush);
+            setPush.clear(); 
+        }
+        if(bFind) {
+            vector<string> path;
+            DFS(start, end, rst, path, pathmap);
+        }
+        return rst;
+    }
+    
+    void DFS(string cur,string end,
+        vector<vector<string>> &res, vector<string>& path, unordered_map<string, vector<string> >& pathmap){  
+        if(cur==end){
+            path.push_back(end);
+            res.push_back(path);
+            path.pop_back();
+            return;
+        }
+        if(!pathmap[cur].empty()){
+            path.push_back(cur);
+            for(int i=0;i<pathmap[cur].size();i++){
+                DFS(pathmap[cur][i],end,res,path, pathmap);
+            }
+            path.pop_back();
+        }
+    }
+};
