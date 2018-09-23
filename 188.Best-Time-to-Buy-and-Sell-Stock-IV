@@ -19,7 +19,21 @@ Explanation: Buy on day 2 (price = 2) and sell on day 3 (price = 6), profit = 6-
              Then buy on day 5 (price = 0) and sell on day 6 (price = 3), profit = 3-0 = 3.
 */
 
-// DP: t(i,j) is the max profit for up to i transactions by time j (0<=i<=K, 0<=j<n)
+
+/*
+DP: dp(i,j) is the max profit for up to i transactions by day j (0<=i<=k, 0<=j<n)
+   dp[i][j] = max(dp[i][j-1], //don't trade on day j
+                  dp[i-1][m]+ max(prices[j]-prices[m])) //trade on day j, m = {0,j-1}
+we can change this formula
+   dp[i-1][m]+ max(prices[j]-prices[m])
+to
+   prices[j] + max(dp[i-1][m]-prices[m])
+use localmax for max(dp[i-1][m]-prices[m]), so we calculate before next j as
+   localmax = max(localmax, dp[i-1][j]-prices[j]);
+for example:
+   dp[1][1] = max(dp[1][0], prices[1] + dp[0][0] - prices[0]
+   dp[1][2] = max(dp[1][1], prices[2] + max(dp[0][0]-prices[0], dp[0][1]-prices[1]))
+*/
 
 class Solution {
 public:
