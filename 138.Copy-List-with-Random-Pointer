@@ -1,0 +1,45 @@
+/*
+A linked list is given such that each node contains an additional random pointer which could point to any node in the list or null.
+
+Return a deep copy of the list.
+*/
+
+/**
+ * Definition for singly-linked list with a random pointer.
+ * struct RandomListNode {
+ *     int label;
+ *     RandomListNode *next, *random;
+ *     RandomListNode(int x) : label(x), next(NULL), random(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    RandomListNode *copyRandomList(RandomListNode *head) {
+        RandomListNode* cur = head;
+        while(cur){
+            RandomListNode* tmp = cur->next;
+            cur->next = new RandomListNode(cur->label);
+            cur->next->next = tmp;
+            cur = tmp;
+        }
+        
+        cur = head;
+        while(cur){
+            if(cur->random){
+                cur->next->random = cur->random->next;
+            }
+            cur = cur->next->next;
+        }
+        
+        cur = head;
+        RandomListNode* newHead = cur ? cur->next : NULL;
+        while(cur){
+            RandomListNode* tmp = cur->next;
+            cur->next = tmp->next;
+            cur = cur->next;
+            if(cur) tmp->next = cur->next;
+        }
+        
+        return newHead;
+    }
+};
