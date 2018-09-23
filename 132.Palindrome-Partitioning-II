@@ -1,0 +1,38 @@
+/*
+Given a string s, partition s such that every substring of the partition is a palindrome.
+
+Return the minimum cuts needed for a palindrome partitioning of s.
+
+Example:
+
+Input: "aab"
+Output: 1
+Explanation: The palindrome partitioning ["aa","b"] could be produced using 1 cut.
+*/
+
+// DP, dp[j][i] is s[j] to s[i] is a palindrome
+// c[i] is minimum cut at s[i-1]
+
+class Solution {
+public:
+    int minCut(string s) {
+        if(s.empty()) return 0;
+        int n = s.length();
+
+        vector<vector<bool> > dp(n, vector<bool>(n, false));
+        int c[n+1];
+        
+        for(int i = 0; i <= n; i++) c[i] = i-1;
+        for(int i = 1; i < n; i++){
+            for(int j = i; j >= 0; j--){
+                if(s[i] == s[j] && (i-j<2 || dp[j+1][i-1])){
+                    dp[j][i] = true;
+                    c[i+1] = min(c[i+1], 1+c[j]);
+                }
+            }
+        }
+    
+        return c[n];
+    }
+    
+};
