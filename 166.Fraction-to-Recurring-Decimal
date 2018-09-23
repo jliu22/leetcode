@@ -1,0 +1,85 @@
+/*
+Given two integers representing the numerator and denominator of a fraction, return the fraction in string format.
+
+If the fractional part is repeating, enclose the repeating part in parentheses.
+
+Example 1:
+
+Input: numerator = 1, denominator = 2
+Output: "0.5"
+Example 2:
+
+Input: numerator = 2, denominator = 1
+Output: "2"
+Example 3:
+
+Input: numerator = 2, denominator = 3
+Output: "0.(6)"
+*/
+
+
+class Solution {
+public:
+    string fractionToDecimal(int numerator, int denominator) {
+        if(numerator == 0) return "0";
+        
+        string rst;
+        long long num = numerator;
+        long long den = denominator;
+        
+        int f = 1;
+        if(num < 0) {
+            num = -num; f *= -1;
+        }
+        if(den < 0) {
+            den = -den; f *= -1;
+        }
+        if(f < 0) rst += "-";
+        
+        long long q = num/den;
+        long long m = num%den;
+        
+        if(q){
+            ostringstream oss;
+            oss << q;
+            rst += oss.str();
+        }
+        else {
+            rst += "0";
+        }
+        
+        if(m == 0) return rst;
+        
+        num = m;
+        unordered_map<long long, int> vpmap;
+        vpmap[num] = rst.size();
+        
+        num *= 10;
+        rst.append(".");
+        vpmap[num] = rst.size();
+        
+        while(num){
+            if(num > den) {
+                rst += char('0' + num/den);
+                num %= den;
+                num *= 10;
+                
+                if(vpmap.find(num) == vpmap.end()){
+                    vpmap[num] = rst.size();
+                }
+                else {
+                    string temp = rst.substr(0, vpmap[num]) + "(" + rst.substr(vpmap[num], rst.size()) + ")";
+                    rst = temp;
+                    break;
+                }
+            }
+            else {
+                num *= 10;
+                rst.append("0");
+                vpmap[num] = rst.size();
+            }
+        }
+        
+        return rst;
+    }
+};
