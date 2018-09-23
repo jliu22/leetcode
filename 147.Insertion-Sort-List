@@ -1,0 +1,87 @@
+/*
+Sort a linked list using insertion sort.
+
+
+A graphical example of insertion sort. The partial sorted list (black) initially contains only the first element in the list.
+With each iteration one element (red) is removed from the input data and inserted in-place into the sorted list
+ 
+
+Algorithm of Insertion Sort:
+
+Insertion sort iterates, consuming one input element each repetition, and growing a sorted output list.
+At each iteration, insertion sort removes one element from the input data, finds the location it belongs within the sorted list, and inserts it there.
+It repeats until no input elements remain.
+
+Example 1:
+
+Input: 4->2->1->3
+Output: 1->2->3->4
+Example 2:
+
+Input: -1->5->3->4->0
+Output: -1->0->3->4->5
+*/
+
+
+/*
+sHead->(0)   head->(1)->(2)->(3)...
+sTail->(0)
+
+sHead->(0)  (1) head->(2)->(3)...
+sTail->(0)
+
+1) node1 < node0
+sHead->(1)->(0)
+sTail------>(0)
+
+2) node1 > node0
+sHead->(0)->(1)
+sTail------>(1)
+*/
+
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *insertionSortList(ListNode *head) {
+        if(!head || !head->next) return head;
+
+        // use first node as head and tail, start from second node
+        ListNode *sHead = head, *sTail = head;
+        head = head->next;
+        sHead->next = NULL;
+
+        // head is like current node in the list
+        while(head) {
+            // take off a node from list
+            ListNode *tmp = head;
+            head = head->next;
+            tmp->next = NULL;
+            
+            if(tmp->val <= sHead->val) {
+                tmp->next = sHead;
+                sHead = tmp;
+            } else if(tmp->val >= sTail->val) {
+                sTail->next = tmp;
+                sTail = sTail->next;
+            } else {
+                ListNode* cur = sHead;
+                // here use cur->next not cur, because we need get the position one step ahead
+                while(cur->next && tmp->val > cur->next->val) {
+                    cur = cur->next;
+                }
+                tmp->next = cur->next;
+                cur->next = tmp;
+            }
+        }
+
+        return sHead;
+    }
+};

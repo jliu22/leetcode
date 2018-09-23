@@ -1,0 +1,71 @@
+/*
+Given n points on a 2D plane, find the maximum number of points that lie on the same straight line.
+
+Example 1:
+
+Input: [[1,1],[2,2],[3,3]]
+Output: 3
+Explanation:
+^
+|
+|        o
+|     o
+|  o  
++------------->
+0  1  2  3  4
+Example 2:
+
+Input: [[1,1],[3,2],[5,3],[4,1],[2,3],[1,4]]
+Output: 4
+Explanation:
+^
+|
+|  o
+|     o        o
+|        o
+|  o        o
++------------------->
+0  1  2  3  4  5  6
+*/
+
+
+/**
+ * Definition for a point.
+ * struct Point {
+ *     int x;
+ *     int y;
+ *     Point() : x(0), y(0) {}
+ *     Point(int a, int b) : x(a), y(b) {}
+ * };
+ */
+class Solution {
+public:
+    int maxPoints(vector<Point> &points) {
+        unordered_map<float, int> slops;
+        unordered_map<float, int>::iterator it;
+        int maxcount = 0;
+        for(int i = 0; i < points.size(); i++){
+            slops.clear();
+            slops[INT_MIN] = 0;//for samep
+            int samep = 1;
+            
+            for(int j = i+1; j <points.size(); j++){
+                if(points[i].x == points[j].x) {
+                    if(points[i].y == points[j].y) samep++;
+                    else {
+                        float slop = INT_MAX;
+                        slops[slop]++; 
+                    }
+                }
+                else {
+                    float slop = 1.0*(points[j].y-points[i].y)/(points[j].x-points[i].x);
+                    slops[slop]++;
+                }
+            }
+            for(it = slops.begin(); it != slops.end(); ++it){
+                if(it->second + samep > maxcount) maxcount = it->second + samep;
+            }
+        }
+        return maxcount;
+    }
+};
