@@ -1,0 +1,92 @@
+/*
+Design a data structure that supports the following two operations:
+
+void addWord(word)
+bool search(word)
+search(word) can search a literal word or a regular expression string containing only letters a-z or .. A . means it can represent any one letter.
+
+Example:
+
+addWord("bad")
+addWord("dad")
+addWord("mad")
+search("pad") -> false
+search("bad") -> true
+search(".ad") -> true
+search("b..") -> true
+Note:
+You may assume that all words are consist of lowercase letters a-z.
+*/
+
+class WordDictionary {
+
+#define CHAR_LEN 26
+
+class Trie{
+public:
+    bool end;
+    Trie* child[CHAR_LEN];
+
+    Trie(){
+        end = false;
+        for(int i = 0; i < CHAR_LEN; i++){
+            child[i] = NULL;
+        }
+    }
+};
+
+    bool search_wildcard(Trie* cur, int st, string& s){
+        if(st == s.size()){
+            return cur->end;
+        }
+        
+        if(s[st] == '.'){
+            for(int i = 0; i < CHAR_LEN; i++){
+                if(cur->child[i]) {
+                    if(search_wildcard(cur->child[i], st+1, s)) return true;
+                }
+            }
+        }
+        else {
+            int c = s[st] - 'a';
+            if(cur->child[c]){
+                return search_wildcard(cur->child[c], st+1, s);
+            }
+            else 
+                return false;
+        }
+    }
+
+    Trie* root;
+
+public:
+    WordDictionary() {
+        root = new Trie();
+    }
+
+    // Adds a word into the data structure.
+    void addWord(string word) {
+        if(word.empty()) return;
+        
+        Trie* cur = root;
+        for(int i = 0; i < word.size(); i++){
+            int c = word[i] - 'a';
+            if(!cur->child[c]){
+                cur->child[c] = new Trie();
+            }
+            cur = cur->child[c];
+        }
+        cur->end = true;
+    }
+
+    // Returns if the word is in the data structure. A word could
+    // contain the dot character '.' to represent any one letter.
+    bool search(string word) {
+        return search_wildcard(root, 0, word);
+    }
+};
+
+// Your WordDictionary object will be instantiated and called as such:
+// WordDictionary wordDictionary;
+// wordDictionary.addWord("word");
+// wordDictionary.search("pattern");

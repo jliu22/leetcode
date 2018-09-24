@@ -1,0 +1,27 @@
+/*
+Given a string s, you are allowed to convert it to a palindrome by adding characters in front of it. Find and return the shortest palindrome you can find by performing this transformation.
+
+Example 1:
+
+Input: "aacecaaa"
+Output: "aaacecaaa"
+Example 2:
+
+Input: "abcd"
+Output: "dcbabcd"
+*/
+
+class Solution {
+public:
+    string shortestPalindrome(string s) {
+        int j = 0;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            if (s[i] == s[j]) { j += 1; }
+        }
+        if (j == s.length()) { return s; }
+        string suffix = s.substr(j);
+        string rev = suffix;
+        reverse(rev.begin(), rev.end());
+        return rev + shortestPalindrome(s.substr(0, j)) + suffix;
+    }
+};
