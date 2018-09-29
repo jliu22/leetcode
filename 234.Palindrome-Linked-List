@@ -1,0 +1,65 @@
+/*
+Given a singly linked list, determine if it is a palindrome.
+
+Example 1:
+
+Input: 1->2
+Output: false
+
+Example 2:
+
+Input: 1->2->2->1
+Output: true
+
+Follow up:
+Could you do it in O(n) time and O(1) space?
+*/
+
+// to make O(1) space, divide to two part from middle, revert the second part then compare with first part
+
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+        if(!head || !head->next) return true;
+
+        ListNode* slow = head;
+        ListNode* fast = head;
+        
+        while(fast->next && fast->next->next){
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        
+        ListNode* second = revert(slow->next);
+        ListNode* first = head;
+        
+        while(first && second){
+            if(first->val != second->val) return false;
+            first = first->next;
+            second = second->next;
+        }
+        
+        return true;
+    }
+    
+    ListNode* revert(ListNode* head) {
+        ListNode* pre=NULL;
+        ListNode* next=NULL;
+        while(head!=NULL){
+            next=head->next;
+            head->next=pre;
+            pre=head;
+            head=next;
+        }
+        return pre;
+    }
+};
