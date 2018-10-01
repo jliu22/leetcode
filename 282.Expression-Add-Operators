@@ -1,0 +1,67 @@
+/*
+Given a string that contains only digits 0-9 and a target value, return all possibilities to add binary operators (not unary) +, -, or * between the digits so they evaluate to the target value.
+
+Example 1:
+
+Input: num = "123", target = 6
+Output: ["1+2+3", "1*2*3"] 
+
+Example 2:
+
+Input: num = "232", target = 8
+Output: ["2*3+2", "2+3*2"]
+
+Example 3:
+
+Input: num = "105", target = 5
+Output: ["1*0+5","10-5"]
+
+Example 4:
+
+Input: num = "00", target = 0
+Output: ["0+0", "0-0", "0*0"]
+
+Example 5:
+
+Input: num = "3456237490", target = 9191
+Output: []
+
+*/
+
+/*
+  pre-multi+multi*cur for example:
+  1. 2+3*2 
+     we add 2+3 = 5 as pre, multi = 3, cur = 2, so 5-3 + 3*2 = 2+3*2
+  2. 2-3*2
+     we have 2-3 = -1 as pre, multi = -3, cur = 2, so -1-(-3) + (-3)*2 = 2-3*2
+*/
+
+class Solution {
+public:
+    vector<string> addOperators(string num, int target) {
+        vector<string> result;
+        if(num.size()==0) return result;
+        help(result, "", num, target, 0, 0, 0);
+        return result;
+    }
+
+    void help(vector<string> &result, string path, string num, int target, int pos, long pre, long multi){
+        if(pos==num.size()){
+            if(pre==target) result.push_back(path);
+            return;
+        }
+        for(int i=pos; i<num.size(); i++){
+            if(num[pos]=='0' && i>pos) break;
+            string str = num.substr(pos, i-pos+1);
+            long cur = stol(str);
+            if(pos==0) {
+                help(result, path+str, num, target, i+1, cur, cur);
+            }
+            else{
+                help(result, path+"+"+str, num, target, i+1, pre+cur, cur);
+                help(result, path+"-"+str, num, target, i+1, pre-cur, -cur);
+                help(result, path+"*"+str, num, target, i+1, pre-multi+multi*cur, multi*cur);
+            }
+        }
+    }
+};
