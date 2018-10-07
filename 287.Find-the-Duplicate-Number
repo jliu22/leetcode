@@ -20,6 +20,9 @@ Note:
 
 */
 
+// if (count of no greater than mid) > mid, means duplicate in small half
+// else duplicate in big half
+
 class Solution {
 public:
     int findDuplicate(vector<int>& nums) {
