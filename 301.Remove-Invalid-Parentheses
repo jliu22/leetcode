@@ -1,0 +1,58 @@
+/*
+Remove the minimum number of invalid parentheses in order to make the input string valid. Return all possible results.
+
+Note: The input string may contain letters other than the parentheses ( and ).
+
+Example 1:
+
+Input: "()())()"
+Output: ["()()()", "(())()"]
+
+Example 2:
+
+Input: "(a)())()"
+Output: ["(a)()()", "(a())()"]
+
+Example 3:
+
+Input: ")("
+Output: [""]
+*/
+
+class Solution {
+public:
+
+    vector<string> removeInvalidParentheses(string s) {
+        vector<string> res;
+        remove(s, 0, 0, '(', ')', res);
+        return res;
+    }
+    
+    void remove(string s, int lastValidLoc, int lastRemoveLoc, char open, char close, vector<string>& res) {
+        // check if string s is valid
+        int count = 0;
+        for(int i = lastValidLoc; i < s.size(); ++i) {
+            if(s[i] == open) count++;
+            if(s[i] == close) count--;
+            if(count < 0) { // s is not valid, try removing every possible close
+                for(int j = lastRemoveLoc; j <= i; ++j) {
+                    if(s[j] == close && (j == lastRemoveLoc || s[j-1] != close))//skipping duplicates
+                        remove(s.substr(0, j) + s.substr(j + 1), i, j, open, close, res);// delete s[j]
+                        // normally we should use i + 1 and j + 1 as next starting location
+                        // but after deleting one char, i and j are effectivelly increased by 1 already
+                }
+                return;
+            }
+        }
+        
+        // use the order of open/close Parentheses as flag
+        if(open == '(') { // first pass
+            reverse(s.begin(), s.end());
+            remove(s, 0, 0, ')', '(', res);
+        }
+        else {// second pass, save result
+            reverse(s.begin(), s.end());
+            res.push_back(s);
+        }
+    }
+};
