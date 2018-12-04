@@ -1,0 +1,47 @@
+/*
+Given an integer array nums, return the number of range sums that lie in [lower, upper] inclusive.
+Range sum S(i, j) is defined as the sum of the elements in nums between indices i and j (i ≤ j), inclusive.
+
+Note:
+A naive algorithm of O(n2) is trivial. You MUST do better than that.
+
+Example:
+
+Input: nums = [-2,5,-1], lower = -2, upper = 2,
+Output: 3 
+Explanation: The three ranges are : [0,0], [2,2], [0,2] and their respective sums are: -2, -1, 2.
+*/
+
+class Solution {
+public:
+    int countRangeSum(vector<int>& nums, int lower, int upper) {
+        int len = nums.size();
+        vector<long> sum(len+1, 0);
+        for(int i = 0; i < len; i++) sum[i+1] = sum[i]+nums[i];
+        return mergeSort(sum, 1, len, lower, upper);
+    }
+
+    long mergeSort(vector<long>& sum, int left, int right, int lower, int upper){
+        if(left > right) return 0;
+        if(left == right)  return ((sum[left]>=lower) && (sum[left]<=upper))?1:0;
+        
+        int res, i, j, k;
+        vector<long> temp(right-left+1, 0);
+        
+        int mid = (left+right)/2;
+        res = mergeSort(sum, left, mid, lower, upper) + mergeSort(sum, mid+1, right, lower, upper);
+        for(int i=left, j=k=mid+1; i<=mid; ++i){
+            // count the valid ranges [i,j], where i is in the first half and j is in the second half
+            while(j<=right && sum[j]-sum[i]<lower)  ++j;
+            while(k<=right && sum[k]-sum[i]<=upper) ++k;
+                res +=k-j;
+        }
+        
+        for(i=k=left, j=mid+1; k<=right; ++k) //merge the sorted two halfs
+            temp[k-left] = (i<=mid) && (j>right || sum[i]<sum[j])?sum[i++]:sum[j++]; 
+        for(k=left; k<=right; ++k) // copy the sorted results back to sum
+            sum[k] = temp[k-left]; 
+        
+        return res;
+    }
+};
