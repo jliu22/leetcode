@@ -1,0 +1,72 @@
+/*
+Given a list of unique words, find all pairs of distinct indices (i, j) in the given list, so that the concatenation of the two words, i.e. words[i] + words[j] is a palindrome.
+
+Example 1:
+
+Input: ["abcd","dcba","lls","s","sssll"]
+Output: [[0,1],[1,0],[3,2],[2,4]] 
+Explanation: The palindromes are ["dcbaabcd","abcddcba","slls","llssssll"]
+
+Example 2:
+
+Input: ["bat","tab","cat"]
+Output: [[0,1],[1,0]] 
+Explanation: The palindromes are ["battab","tabbat"]
+
+*/
+
+// O(n*k*k) k is average length of word, n is size of words
+// for each word split to two parts, and seach if each part reverse exist in words 
+
+class Solution {
+public:
+    vector<vector<int>> palindromePairs(vector<string>& words) {
+        vector<vector<int>> rst;
+        if(words.empty() || words.size() < 2) return rst;
+        
+        unordered_map<string, int> wmap;
+        for(int i = 0; i < words.size(); i++){
+            wmap[words[i]] = i;
+        }
+        
+        for(int i = 0; i < words.size(); i++){
+            for (int j=0; j<=words[i].length(); j++) {
+                string left = words[i].substr(0, j);
+                string right = words[i].substr(j);
+                
+                if(ispalindrome(left)){
+                    string tmp = right;
+                    reverse(tmp.begin(), tmp.end());
+                    if(wmap.find(tmp) != wmap.end() && wmap[tmp] != i){
+                        vector<int> val;
+                        val.push_back(wmap[tmp]);
+                        val.push_back(i);
+                        rst.push_back(val);
+                    }
+                }
+                
+                if(ispalindrome(right)){
+                    string tmp = left;
+                    reverse(tmp.begin(), tmp.end());
+                    if(wmap.find(tmp) != wmap.end() && wmap[tmp] != i && right.length() > 0){
+                        vector<int> val;
+                        val.push_back(i);
+                        val.push_back(wmap[tmp]);
+                        rst.push_back(val);
+                    }
+                }
+            }
+        }
+        
+        return rst;
+    }
+    
+    bool ispalindrome(string const& str) {
+        int i = 0, j = str.length()-1;
+        while(i < j) {
+            if(str[i++] != str[j--]) return false;
+        }
+        
+        return true;
+    }
+};
