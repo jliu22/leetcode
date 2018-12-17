@@ -1,0 +1,34 @@
+/*
+Given a string which consists of lowercase or uppercase letters, find the length of the longest palindromes that can be built with those letters.
+
+This is case sensitive, for example "Aa" is not considered a palindrome here.
+
+Note:
+Assume the length of given string will not exceed 1,010.
+
+Example:
+
+Input:
+"abccccdd"
+
+Output:
+7
+
+Explanation:
+One longest palindrome that can be built is "dccaccd", whose length is 7.
+*/
+
+// check how many odd count char, longest palindrome can have at most only one odd count char
+
+class Solution {
+public:
+    int longestPalindrome(string s) {
+        vector<int> count(256);
+        for (char c : s)
+            ++count[c];
+        int odds = 0;
+        for (int c : count)
+            odds += c & 1;
+        return s.size() - odds + (odds > 0);
+    }
+};
