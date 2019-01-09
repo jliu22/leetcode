@@ -1,0 +1,96 @@
+/*
+ In English, we have a concept called root, which can be followed by some other words to form another longer word - let's call this word successor. For example, the root an, followed by other, which can form another word another.
+
+Now, given a dictionary consisting of many roots and a sentence. You need to replace all the successor in the sentence with the root forming it. If a successor has many roots can form it, replace it with the root with the shortest length.
+
+You need to output the sentence after the replacement.
+
+Example 1:
+
+Input: dict = ["cat", "bat", "rat"]
+sentence = "the cattle was rattled by the battery"
+Output: "the cat was rat by the bat"
+
+Note:
+
+    The input will only have lower-case letters.
+    1 <= dict words number <= 1000
+    1 <= sentence words number <= 1000
+    1 <= root length <= 100
+    1 <= sentence words length <= 1000
+*/
+
+class Solution {
+    #define CHAR_LEN 26
+    
+    class TrieNode{
+    public:
+        TrieNode* child[CHAR_LEN];
+        bool end;
+        
+        TrieNode() {
+            end = false;
+            for(int i = 0; i < CHAR_LEN; i++){
+                child[i] = NULL;
+            }
+        }
+    };
+
+    TrieNode* root;
+public:
+
+    void buildTrie(vector<string>& dict) {
+        root = new TrieNode;
+        for(int i = 0; i < dict.size(); i++) {
+            add(dict[i]);
+        }
+    }
+    
+    void add(string const& str) {
+        TrieNode* cur = root;
+        for(int i = 0; i < str.length(); i++) {
+            int t = str[i] - 'a';
+            if(!cur->child[t]) cur->child[t] = new TrieNode;
+            cur = cur->child[t];
+        }
+        cur->end = true;
+    }
+
+    string find(string const& str) {
+        string res;
+        TrieNode* cur = root;
+        for(int i = 0; i < str.length(); i++) {
+            int t = str[i] - 'a';
+            if(cur->child[t]) {
+                cur = cur->child[t];
+                res += str[i];
+                if(cur->end) break;
+            } else {
+                break;
+            }
+        }
+        return cur->end ? res : str;
+    }
+
+    vector<string> split(string sentence) {
+        vector<string> res;
+        std::stringstream ss(sentence);
+        std::string item;
+        while (std::getline(ss, item, ' ')) {
+            res.push_back(item);
+        }
+        return res;
+    }
+    
+    string replaceWords(vector<string>& dict, string sentence) {
+        string res;
+        buildTrie(dict);
+        vector<string> words = split(sentence);
+        
+        for(int i = 0; i < words.size(); i++) {
+            res += find(words[i]);
+            if(i != words.size()-1) res += " ";
+        }
+        return res;
+    }
+};
