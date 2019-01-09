@@ -1,0 +1,76 @@
+/*
+You have k lists of sorted integers in ascending order. Find the smallest range that includes at least one number from each of the k lists.
+
+We define the range [a,b] is smaller than range [c,d] if b-a < d-c or a < c if b-a == d-c.
+
+Example 1:
+
+Input:[[4,10,15,24,26], [0,9,12,20], [5,18,22,30]]
+Output: [20,24]
+Explanation: 
+List 1: [4, 10, 15, 24,26], 24 is in range [20,24].
+List 2: [0, 9, 12, 20], 20 is in range [20,24].
+List 3: [5, 18, 22, 30], 22 is in range [20,24].
+
+Note:
+
+    The given list may contain duplicates, so ascending order means >= here.
+    1 <= k <= 3500
+    -105 <= value of elements <= 105.
+    For Java users, please note that the input type has been changed to List<List<Integer>>. And after you reset the code template, you'll see this point.
+*/
+
+class Solution {
+public:
+    struct Node
+	{
+		int val;
+		int i;
+		int j;
+
+		Node(int _val, int _i, int _j) :val(_val), i(_i), j(_j) {}
+	};
+	struct cmp
+	{
+		bool operator()(Node n1, Node n2)
+		{
+			return n1.val > n2.val;
+		}
+	};
+    
+    vector<int> smallestRange(vector<vector<int>>& nums) {
+        priority_queue<Node,vector<Node>,cmp> my_pq;
+		int cur_min = INT_MAX, cur_max = INT_MIN,cur_range = INT_MAX;
+		int start, end;
+		for (int i = 0; i < nums.size(); i++)
+		{
+			Node tem_node(nums[i][0], i, 0);
+			my_pq.push(tem_node);
+			cur_max = max(cur_max, nums[i][0]);
+		}
+
+		while (true)
+		{
+			auto top = my_pq.top();
+			my_pq.pop();
+			cur_min = top.val;
+			if (cur_max - cur_min < cur_range)
+			{
+				start = cur_min;
+				end = cur_max;
+				cur_range = end - start;
+			}
+
+			if ((top.j + 1) == nums[top.i].size()) break;
+
+            Node next(nums[top.i][top.j + 1], top.i, top.j + 1);
+			my_pq.push(next);
+			if (next.val > cur_max)
+				cur_max = next.val;
+
+		}
+		vector<int> ret = { start,end };
+
+		return ret;
+    }
+};
