@@ -22,8 +22,8 @@ public:
         int carry = 0;
         
         while(ai >= 0 || bi >= 0 || carry){
-            int m = ai < 0 ? 0 : a[ai--];
-            int n = bi < 0 ? 0 : b[bi--];
+            int m = ai < 0 ? 0 : a[ai--]-'0;
+            int n = bi < 0 ? 0 : b[bi--]-'0;
             int t = m + n + carry;
             t&1 ? s = "1" + s : s = "0" + s;
             carry = (t >> 1) & 1;
