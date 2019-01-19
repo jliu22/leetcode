@@ -18,6 +18,10 @@ Note:
 
 */
 
+// we use visited to mark what number has been used
+// because when cur_sum == target, we call canPartition with start_index from 0
+// so here we cannot just use the start_index from i+1 without the visited flags
+
 class Solution {
 public:
     
