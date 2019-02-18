@@ -57,3 +57,20 @@ public:
         return res;
     }
 };
+
+// one pass
+
+// i for last available seat, right side of last person
+
+int maxDistToClosest(vector<int> seats) {
+        int i, j, res = 0, n = seats.size();
+        for (i = j = 0; j < n; ++j)
+            if (seats[j] == 1) {
+                if (i == 0) res = max(res, j - i); // before first person
+                else res = max(res, (j - i + 1) / 2); // between last person and this person
+                i = j + 1;
+            }
+        res = max(res, n - i);// after the final person
+        return res;
+    }
+
