@@ -28,6 +28,9 @@ Replace the one 'A' in the middle with 'B' and form "AABBBBA".
 The substring "BBBB" has the longest repeating letters, which is 4.
 */
 
+// find max count for a char in sliding window, so all the other chars' count should be <=k
+// so if other char's count > k, we need move the start
+
 class Solution {
 public:
     int characterReplacement(string s, int k) {
