@@ -21,7 +21,7 @@ Explanation: The answer is "wke", with the length of 3.
 
 // idea is mark the first none duplicate char position - index in the string
 // use array to save each char last position
-// when find a duplicate char, move first none duplicate position to the duplicate char last position
+// st is the last duplicate char position
 
     int lengthOfLongestSubstring(string s) {
         vector<int> pos(256, -1);
