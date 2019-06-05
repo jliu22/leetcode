@@ -1,0 +1,47 @@
+/*
+In a given integer array A, we must move every element of A to either list B or list C. (B and C initially start empty.)
+
+Return true if and only if after such a move, it is possible that the average value of B is equal to the average value of C, and B and C are both non-empty.
+
+Example :
+Input: 
+[1,2,3,4,5,6,7,8]
+Output: true
+Explanation: We can split the array into [1,4,5,8] and [2,3,6,7], and both of them have the average of 4.5.
+Note:
+
+The length of A will be in the range [1, 30].
+A[i] will be in the range of [0, 10000].
+*/
+
+/*
+totalSum/n = Asum/k = Bsum/(n-k), where k = A.size() and 1 <= k <= n/2;
+Asum = totalSum*k/n, which is an integer. So we have totalSum*k%n == 0;
+we need find k element sum up to Asum.
+*/
+
+class Solution {
+public:
+    bool splitArraySameAverage(vector<int>& A) {
+        if (A.size() == 1) return false;
+        int sumA = 0;
+        for (int a: A) sumA += a;
+        sort(A.begin(), A.end());
+        for (int len = 1; len <= A.size() / 2; len++) {
+            if ((sumA * len) % A.size() == 0) {
+                if (helper(A, (sumA * len) / A.size(), len, 0)) return true;
+            }
+        }
+        return false;
+    }
+    
+    bool helper(vector<int>& A, int sum, int num, int pos) {
+        if(num == 0) return sum == 0;
+        if(A[pos] > sum/num) return false;
+        for(int i = pos; i < A.size()-num+1; i++) {
+            if(i > pos && A[i]==A[i-1]) continue;
+            if(helper(A, sum-A[i], num-1, i+1)) return true; 
+        }
+        return false;
+    }
+};
