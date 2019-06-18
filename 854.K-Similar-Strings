@@ -1,0 +1,59 @@
+/*
+Strings A and B are K-similar (for some non-negative integer K) if we can swap the positions of two letters in A exactly K times so that the resulting string equals B.
+
+Given two anagrams A and B, return the smallest K for which A and B are K-similar.
+
+Example 1:
+
+Input: A = "ab", B = "ba"
+Output: 1
+Example 2:
+
+Input: A = "abc", B = "bca"
+Output: 2
+Example 3:
+
+Input: A = "abac", B = "baca"
+Output: 2
+Example 4:
+
+Input: A = "aabc", B = "abca"
+Output: 2
+Note:
+
+1 <= A.length == B.length <= 20
+A and B contain only lowercase letters from the set {'a', 'b', 'c', 'd', 'e', 'f'}
+*/
+
+class Solution {
+public:
+    int kSimilarity(string A, string B) {
+        if(A == B) return 0;
+        int res = 0;
+        unordered_set<string> visited;
+        visited.insert(A);
+        queue<string> q;
+        q.push(A);
+        while(!q.empty()) {
+            res++;
+            int size = q.size();
+            for(int i = 0; i < size; i++) {
+                string s = q.front();
+                q.pop();
+                int j = 0;
+                while(s[j] == B[j]) j++;
+                for(int k = j+1; k < s.size(); k++) {
+                    if (s[k] == B[k] || s[j] != B[k]) continue;
+                    string tmp = s;
+                    swap(tmp[j], tmp[k]);
+                    if(tmp == B) return res;
+                    if(!visited.count(tmp)) {
+                        visited.insert(tmp);
+                        q.push(tmp);
+                    }
+                }
+            }
+        }
+        return res;
+    }
+};
