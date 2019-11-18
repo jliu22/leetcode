@@ -1,0 +1,62 @@
+/*
+In a binary tree, the root node is at depth 0, and children of each depth k node are at depth k+1.
+
+Two nodes of a binary tree are cousins if they have the same depth, but have different parents.
+
+We are given the root of a binary tree with unique values, and the values x and y of two different nodes in the tree.
+
+Return true if and only if the nodes corresponding to the values x and y are cousins.
+*/
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+
+
+// BFS, find x and y if in same layer and need to check whether x and y have same parents
+
+class Solution {
+public:
+    bool isCousins(TreeNode* root, int x, int y) {
+        queue<TreeNode*> que;
+        que.push(root);
+
+        while(!que.empty()) {
+            int len = que.size();
+            bool bFindX = false, bFindY = false;
+            for(int i = 0; i < len; i++) {
+                TreeNode* cur = que.front();
+                que.pop();
+            
+                if(cur->left) {
+                    if(cur->left->val == x) bFindX = true;
+                    if(cur->left->val == y) bFindY = true;
+                    que.push(cur->left);
+                }
+                if(cur->right) {
+                    if(cur->right->val == x) bFindX = true;
+                    if(cur->right->val == y) bFindY = true;
+                    que.push(cur->right);
+                }
+                
+                // same parent, return false
+                if(cur->left && cur->right) {
+                    if((cur->left->val == x && cur->right->val == y) || 
+                       (cur->left->val == y && cur->right->val == x)) {
+                        return false;
+                    }
+                }
+            }
+            // find in same layer
+            if(bFindX && bFindY) return true;
+        }
+        
+        return false;
+    }
+};
