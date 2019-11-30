@@ -27,6 +27,11 @@ tiles consists of uppercase English letters.
 // leghth 3:  A 2 B 1 =>  A 1(A 1 B 1) + B 1 (A 2 B 0) => 3
 // so add up to 2 + 3 + 3
 // in recursive we don't count each level, instead we count left sequence after pick one char as start
+// A 1 B 1 => choose A we got A itself, and AB
+//            choose B we got B itself, and BA
+// A 2 B 1 => choose A we got A itself, and A 1 B1 will get  A, B, AB, BA, add the front A will get AA, AB, AAB, ABA, count = 5
+//         => choose B we got B itself, and A2 will get A, AA, add the front B will get BA, BAA, count = 3
+//         => total count = 5 + 3 = 8
 
 class Solution {
 public:
