@@ -23,8 +23,8 @@ Answers within 10^-6 of the correct answer will be accepted as correct.
 */
 
 // dp[i][k] is maxmum value for from i to n-1, partition to k groups
-// dp[i][k] = max(avg[0, n], max(avg[i,j]+dp[i][k-1]) for j = [i, n-1]),  avg[0, n] is dp[i][0] as one group
-// iterate j from i to n-1, [i, j] as a group, and [j, n-1] divide to k-1 group
+// dp[i][k] = max(avg[i, n], max(avg[i,j]+dp[j][k-1]) for j = [i+1, n-1]),  avg[i, n] is dp[i][0] as one group
+// iterate j from i+1 to n-1, [i, j] as a group, and [j+1, n-1] divide to k-1 group
 
 class Solution {
 public:
